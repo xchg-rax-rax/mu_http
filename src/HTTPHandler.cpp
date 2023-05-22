@@ -30,7 +30,7 @@ void HTTPHandler::read_packet_done(const system::error_code& error, std::size_t 
                                std::istreambuf_iterator<char>());
 
     const auto http_request = HTTPRequest(packet_string);
-    
+    http_request.debug_print();
     read_packet();
 }
 
