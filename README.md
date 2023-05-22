@@ -1,18 +1,18 @@
 # mu_http
 
-Mu http is a tiny high performance HTTP server written in C++ using boost asio.
+Mu http is a tiny high performance HTTP server written in C++ using boost aiso.
 
-This primarily a educational exercise on my part to deepen my understanding of:
+This primarily an educational exercise on my part to deepen my understanding of:
 
 * The HTTP protocol
 * Network Protcols more generally
-* Building Asynchronus using Boost ASIO
-* Using C++20 language features for writing low latancy, highly performant code
+* Building Asynchronous using Boost ASIO
+* Using C++20 language features for writing low latency, highly performant code
 
 ## Building the Project
 
 To build this project on mac or linux you will need to first install git, cmake, gcc, and the boost libraries.
-Assuming these requirements are met you can build the server by running the folloing commands:
+Assuming these requirements are met, you can build the server by running the folloing commands:
 
  ```bash
  $ git clone https://github.com/xchg-rax-rax/mu_http.git
