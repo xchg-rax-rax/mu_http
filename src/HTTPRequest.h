@@ -32,6 +32,8 @@ class HTTPRequest {
             _valid = parse_request();
         }
 
+        bool valid() const { return _valid; }
+
         void debug_print() const;
     private:
         bool _valid = false;
