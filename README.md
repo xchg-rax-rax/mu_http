@@ -1,4 +1,4 @@
-# mu_http
+# mu http
 
 Mu http is a tiny high performance HTTP server written in C++ using boost aiso.
 
