@@ -33,7 +33,9 @@ class HTTPRequest {
         }
 
         bool valid() const { return _valid; }
-
+        const std::pair<uint32_t, uint32_t>& http_version() const { return  _http_version; }
+        const std::string_view uri() const { return _uri; }
+        
         void debug_print() const;
     private:
         bool _valid = false;
