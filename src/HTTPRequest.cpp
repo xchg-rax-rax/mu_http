@@ -25,14 +25,21 @@ bool HTTPRequest::parse_request() {
     bool last_line_crlf = false;
     for (const auto line : std::views::split(_request, CRLF)) {
         const auto line_view = std::string_view(line.begin(), line.end());
-        if (i == 0 && !parse_start_line(line_view)) {
-            return false;
+        // This logic is FUBAR
+        if (i == 0) {
+            if (!parse_start_line(line_view)) {
+                return false;
+            }
         }
         else if (line_view == "") {
-            last_line_crlf = true;
             if (last_line_crlf) {
-                _message_body = std::string_view(line.end(), _request.end());
                 break;
+            }
+            last_line_crlf = true;
+        }
+        else {
+            if (!parse_header(line_view)) {
+                return false;
             }
         }
         i++;
@@ -111,9 +118,33 @@ bool HTTPRequest::parse_http_version(const std::string_view http_version_view) {
     return true;
 }
 
+bool HTTPRequest::parse_header(const std::string_view header_view) {
+    std::string_view key;
+    std::string_view value;
+    int count = 0;
+    for (const auto section: std::views::split(header_view, ':')) {
+        if (count == 0) {
+            key = std::string_view(section.begin(), section.end());
+        }
+        else if (count == 1) {
+            value = std::string_view(section.begin(), header_view.end());
+        }
+        else {
+            break;
+        }
+        count++;
+    }
+    _headers[key] = value;
+    return true;
+}
+
 void HTTPRequest::debug_print() const {
     std::cout << "Method: " << enum_to_method.at(_method) << "\n";
     std::cout << "URI: " << _uri << "\n";
     std::cout << "HTTP Version: " << _http_version.first << "." << _http_version.second << "\n";
-    std::cout << "Message-Body: " << _message_body << std::endl;
+    std::cout << "Headers: " << "\n";
+    for (const auto& header : _headers) {
+        std::cout << "\t" <<  header.first << " : " << header.second << _http_version.second << "\n";
+    }
+    //std::cout << "Message-Body: " << _message_body << std::endl;
 }

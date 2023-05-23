@@ -4,6 +4,7 @@
 #include <utility>
 #include <cstdint>
 #include <string_view>
+#include <map>
 #include <unordered_map>
 
 enum class HTTPRequestMethod: int16_t {
@@ -34,15 +35,16 @@ class HTTPRequest {
         void debug_print() const;
     private:
         bool _valid = false;
-        std::unordered_map<std::string, std::string> _headers = {};
+        std::map<std::string_view, std::string_view> _headers = {};
         const std::string _request;
         HTTPRequestMethod _method = HTTPRequestMethod::Unknown;
         std::string_view _uri;
         std::pair<uint32_t, uint32_t> _http_version;
-        std::string_view _message_body;
+        //std::string_view _message_body;
         bool parse_request();
         bool parse_start_line(const std::string_view);
         bool parse_method(const std::string_view);
         bool parse_uri(const std::string_view uri_view);
         bool parse_http_version(const std::string_view http_version_view);
+        bool parse_header(const std::string_view);
 };
