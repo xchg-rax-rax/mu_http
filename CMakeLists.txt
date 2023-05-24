@@ -13,5 +13,6 @@ add_executable(${PROJECT_NAME} src/main.cpp src/HTTPHandler.cpp src/HTTPRequest.
 set(Boost_USE_STATIC_LIBS OFF)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
-find_package(Boost 1.50 REQUIRED COMPONENTS filesystem)
+find_package(Boost 1.81 REQUIRED COMPONENTS program_options)
 message(STATUS "Boost version: ${Boost_VERSION}")
+target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})

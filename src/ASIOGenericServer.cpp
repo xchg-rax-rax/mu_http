@@ -7,11 +7,11 @@
 using namespace boost::asio;
 
 template <typename ConnectionHandler>
-void ASIOGenericServer<ConnectionHandler>::start_server(uint16_t port) {
+void ASIOGenericServer<ConnectionHandler>::start_server(const std::string& ip, uint16_t port) {
     auto handler = std::make_shared<ConnectionHandler>(_io_service);
 
     // set up the acceptor to listen on the tcp port
-    ip::tcp::endpoint endpoint(ip::tcp::v4(), port);
+    ip::tcp::endpoint endpoint(ip::address::from_string(ip), port);
     _acceptor.open(endpoint.protocol());
     _acceptor.set_option(ip::tcp::acceptor::reuse_address(true));
     _acceptor.bind(endpoint);

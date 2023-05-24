@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 #include <thread>
 #include <vector>
 #include <cstdint>
@@ -16,7 +17,7 @@ class ASIOGenericServer {
             , _io_service{}
             , _acceptor(_io_service)
         {}
-        void start_server(uint16_t port);
+        void start_server(const std::string&, uint16_t port);
     private:
         void handle_new_connection(share_handler_t handler, const boost::system::error_code& error);
         int _thread_count;
