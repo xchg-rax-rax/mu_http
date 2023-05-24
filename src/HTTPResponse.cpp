@@ -1,5 +1,7 @@
 #include "HTTPResponse.h"
+#include "HTTPRequest.h"
 
+#include <set>
 #include <iomanip>
 #include <chrono>
 #include <fstream>
@@ -10,14 +12,6 @@
 #include <string>
 #include <filesystem>
 
-
-// These are silly, implement a function to prepare these as need (maybe even at compile time?)
-
-/*
-static constexpr std::string generate_error_body(const std::string message) {
-    return "<html>\n<head><title>"s + message + "</title></head>\n<body bgcolor=\"white\">\n<center><h1>"s + message + "</h1></center>\n</body>\n</html>"s;
-}
-*/
 
 static std::string generate_error_body(const std::string message) {
     const std::string start = "<html>\n<head><title>";
@@ -34,6 +28,8 @@ static const auto internal_server_error_500_body = generate_error_body("500 Inte
 
 static const auto http_version_not_supported_505_body = generate_error_body("505 HTTP Version not supported");
 
+static const auto not_implemented_501_body = generate_error_body("501 Not Implemented");
+
 std::string HTTPResponse::generate_timestamp() {
     auto now = std::chrono::system_clock::now();
     auto now_as_time_t = std::chrono::system_clock::to_time_t(now);
@@ -48,18 +44,28 @@ void HTTPResponse::generate_response() {
     std::map<std::string, std::string> headers{};
     headers["Server"] = "Mu HTTP Server/0.1";
     headers["Date"] = generate_timestamp();
+
     if (!_request.valid()) {
-        // Set fields for 400 response
         compose_response(StatusCode::bad_request, headers, bad_response_400_body);
         return;
     }
+
     if (_request.http_version().first != 1 || _request.http_version().second > 1) {
-        // Set fields for 505 response
         compose_response(StatusCode::http_version_not_supported, 
                 headers, 
                 http_version_not_supported_505_body);
         return;
     }
+
+    static const std::set<HTTPRequestMethod> allowed_methods {
+        HTTPRequestMethod::GET, 
+        HTTPRequestMethod::HEAD
+    };
+    if (allowed_methods.count(_request.method()) == 0) {
+        compose_response(StatusCode::not_implemented, headers, not_implemented_501_body);
+        return;
+    }
+
     // Should probably do this using std::filesystem::paths
     // std::filesystem seems to be quite good at catching path traversal bugs but best to be safe
     const static std::string pwd = std::filesystem::current_path();
@@ -74,7 +80,6 @@ void HTTPResponse::generate_response() {
     }
     std::string target_file;
     if (!read_target_file(target_file_path, target_file)) {
-        // Server error
         compose_response(StatusCode::internal_server_error, headers, internal_server_error_500_body);
         return;
     }
@@ -91,7 +96,9 @@ void HTTPResponse::compose_response(StatusCode status_code,
         _response += header.first + std::string(": ") + header.second + std::string("\r\n");
     }
     _response += "\r\n";
-    _response += message_body;
+    if (_request.method() != HTTPRequestMethod::HEAD) {
+        _response += message_body;
+    }
 }
 
 bool HTTPResponse::read_target_file(const std::string& target_file_path, std::string& target_file) {

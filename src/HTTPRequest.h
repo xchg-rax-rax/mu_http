@@ -8,19 +8,22 @@
 #include <unordered_map>
 
 enum class HTTPRequestMethod: int16_t {
-    GET = 0,
-    HEAD = 1,
+    HEAD = 0,
+    GET = 1,
+    POST = 2,
     Unknown = -1
 };
 
 const std::unordered_map<std::string_view, HTTPRequestMethod> method_to_enum {
     {"GET", HTTPRequestMethod::GET},
-    {"HEADER", HTTPRequestMethod::HEAD}
+    {"HEAD", HTTPRequestMethod::HEAD},
+    {"POST", HTTPRequestMethod::POST}
 };
 
 const std::unordered_map<HTTPRequestMethod, std::string_view> enum_to_method {
+    {HTTPRequestMethod::HEAD, "HEAD"},
     {HTTPRequestMethod::GET, "GET"},
-    {HTTPRequestMethod::HEAD, "HEADER"},
+    {HTTPRequestMethod::POST, "POST"},
     {HTTPRequestMethod::Unknown, "Unknown"} 
 };
 
@@ -35,6 +38,7 @@ class HTTPRequest {
         bool valid() const { return _valid; }
         const std::pair<uint32_t, uint32_t>& http_version() const { return  _http_version; }
         const std::string_view uri() const { return _uri; }
+        const HTTPRequestMethod method() const { return _method; }
         
         void debug_print() const;
     private:
