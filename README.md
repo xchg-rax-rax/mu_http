@@ -26,3 +26,15 @@ Assuming these requirements are met, you can build the server by running the fol
  ## Usage
  
  [To Do]
+
+ ## To Do
+
+* Handling for all RFC specified methods
+* Mime types
+* Refactor and Optimize
+* Testing 
+    - Unit Tests
+    - Fuzzing
+* More graceful connection termination (mostly a logging thing)
+* Encoding(?)
+
