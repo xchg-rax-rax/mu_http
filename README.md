@@ -1,4 +1,4 @@
-# mu http
+# Mu HTTP 
 
 Mu http is a tiny high performance HTTP server written in C++ using boost aiso.
 
@@ -24,8 +24,17 @@ Assuming these requirements are met, you can build the server by running the fol
  The resultant binary will be placed in the `/bin` directory
  
  ## Usage
- 
- [To Do]
+
+```bash
+Mu HTTP - A tiny high performance HTTP server
+Help:
+  --help                  Display this Message
+  --web-root arg (=/opt/) The web root that the server should use.
+  --ip arg (=0.0.0.0)     The IP address on which to listen for connections.
+  --port arg (=8080)      The port on which to listen for connections.
+  --threads arg (=1)      The number of threads to be used to handle 
+                          connections.
+```
 
  ## To Do
 
