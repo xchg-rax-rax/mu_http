@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 project(http_server)
 
-add_executable(${PROJECT_NAME} src/main.cpp src/HTTPHandler.cpp src/HTTPRequest.cpp)
+add_executable(${PROJECT_NAME} src/main.cpp src/HTTPHandler.cpp src/HTTPRequest.cpp src/HTTPResponse.cpp)
 
 set(Boost_USE_STATIC_LIBS OFF)
 set(Boost_USE_MULTITHREADED ON)
