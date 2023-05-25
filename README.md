@@ -39,11 +39,11 @@ Help:
  ## To Do
 
 * Mime types
+* More graceful connection termination (mostly a logging thing)
 * Handle inbound message bodies correctly
 * Refactor and Optimize
 * Testing 
     - Unit Tests
     - Fuzzing
-* More graceful connection termination (mostly a logging thing)
 * Encoding(?)
 
