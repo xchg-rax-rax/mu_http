@@ -18,14 +18,14 @@ void ASIOGenericServer<ConnectionHandler>::start_server(const std::string& ip, u
     _acceptor.listen();
 
     _acceptor.async_accept(handler->socket(),
-        [=](auto ec) {
+        [this,handler](auto ec) {
             handle_new_connection(handler, ec);
         }
     );
     
     // start pool of threads to process the asio events
     for (int i = 0; i<_thread_count; i++) {
-        _thread_pool.emplace_back(std::thread([=]{_io_service.run();}));
+        _thread_pool.emplace_back(std::thread([this]{_io_service.run();}));
     }
     for (auto& thread : _thread_pool) {
         thread.join();
@@ -44,7 +44,7 @@ void ASIOGenericServer<ConnectionHandler>::handle_new_connection(share_handler_t
     handler->start();
     auto new_handler = std::make_shared<ConnectionHandler>(_io_service);
     _acceptor.async_accept(new_handler->socket(),
-        [=](auto ec) {
+        [this,new_handler](auto ec) {
             handle_new_connection(new_handler, ec);
         }
     );

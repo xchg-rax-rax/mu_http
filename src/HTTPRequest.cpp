@@ -87,8 +87,7 @@ bool HTTPRequest::parse_method(const std::string_view method_view) {
         _method = method_to_enum.at(method_view);
     }
     catch (const std::out_of_range& e) {
-        log_failed_request("Invalid Method", method_view);
-        return false;
+        _method = HTTPRequestMethod::Unknown;
     }
     return true;
 }
