@@ -40,6 +40,7 @@ Help:
 
 * Handling for all RFC specified methods
 * Mime types
+* Handle inbound message bodies correctly
 * Refactor and Optimize
 * Testing 
     - Unit Tests
