@@ -39,5 +39,6 @@ class HTTPResponse {
         void generate_response();
         void compose_response(StatusCode status_code, std::map<std::string, std::string> headers, std::string_view message_body);
         bool read_target_file(const std::string& target_file_path, std::string& target_file);
-        std::string generate_timestamp();
+        const std::string generate_timestamp();
+        const std::string get_mime_type(const std::string& target_file_path);
 };

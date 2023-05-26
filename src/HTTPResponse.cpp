@@ -1,5 +1,6 @@
 #include "HTTPResponse.h"
 #include "HTTPRequest.h"
+#include "Mime.h"
 
 #include <set>
 #include <iomanip>
@@ -9,6 +10,7 @@
 #include <cstdint>
 #include <iterator>
 #include <sstream>
+#include <streambuf>
 #include <string>
 #include <filesystem>
 
@@ -29,15 +31,6 @@ static const auto internal_server_error_500_body = generate_error_body("500 Inte
 static const auto http_version_not_supported_505_body = generate_error_body("505 HTTP Version not supported");
 
 static const auto not_implemented_501_body = generate_error_body("501 Not Implemented");
-
-std::string HTTPResponse::generate_timestamp() {
-    auto now = std::chrono::system_clock::now();
-    auto now_as_time_t = std::chrono::system_clock::to_time_t(now);
-    std::tm *local = std::localtime(&now_as_time_t);
-    std::stringstream timestamp_ss;
-    timestamp_ss << std::put_time(local, "%a, %d %b %Y %T %Z");
-    return timestamp_ss.str();
-}
 
 void HTTPResponse::generate_response() {
     // During optimization should probably be made to be static
@@ -83,6 +76,7 @@ void HTTPResponse::generate_response() {
         compose_response(StatusCode::internal_server_error, headers, internal_server_error_500_body);
         return;
     }
+    headers["Content-Type"] = get_mime_type(target_file_path);
     compose_response(StatusCode::ok, headers, target_file);
     return;
 }
@@ -116,4 +110,22 @@ bool HTTPResponse::read_target_file(const std::string& target_file_path, std::st
         return false;
     }
     return true;
+}
+
+const std::string HTTPResponse::generate_timestamp() {
+    auto now = std::chrono::system_clock::now();
+    auto now_as_time_t = std::chrono::system_clock::to_time_t(now);
+    std::tm *local = std::localtime(&now_as_time_t);
+    std::stringstream timestamp_ss;
+    timestamp_ss << std::put_time(local, "%a, %d %b %Y %T %Z");
+    return timestamp_ss.str();
+}
+
+const std::string HTTPResponse::get_mime_type(const std::string& target_file_path) {
+    const std::filesystem::path target_path(target_file_path);
+    try {
+        return mime_map.at(target_path.extension());
+    } catch (...) {
+        return "application/octet-stream";
+    }
 }
